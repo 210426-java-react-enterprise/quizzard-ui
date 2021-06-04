@@ -9,18 +9,10 @@ const APP_STATE = {
 const API_ROOT = 'http://localhost:5000';
 
 window.onload = () => {
-    renderLogin();
+    render('login');
 }
 
-function renderLogin() {
-    loadViewTemplate('login');
-}
-
-function renderDashboard() {
-    loadViewTemplate('dashboard');
-}
-
-function loadViewTemplate(viewName) {
+function render(viewName) {
     let xhr = new XMLHttpRequest();
     let path = `components/${viewName}-component/${viewName}.component`;
     xhr.open('GET', `${path}.html`);

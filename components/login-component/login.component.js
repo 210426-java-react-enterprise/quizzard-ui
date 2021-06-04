@@ -17,22 +17,17 @@ function login() {
 
         let credentialsJSON = JSON.stringify(credentials);
 
-        // AJAX = Asynchronous JavaScript And XML (even though it supports JSON)
-        // Based around an object called: XMLHttpRequest (XHR)
         let xhr = new XMLHttpRequest();
         xhr.open('POST', `${API_ROOT}/auth`);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(credentialsJSON);
-
-        // The XHR object has a value/field called a "ready state"
-        // There are 5 ready states in total, learn more here: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
 
                 let authenticatedUser = JSON.parse(xhr.responseText);
                 APP_STATE.authUser = authenticatedUser;
-                renderDashboard();
+                render('dashboard');
 
             } else if (xhr.status != 200) {
                 printErrorToPage('Invalid credentials provided!');
