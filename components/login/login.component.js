@@ -28,7 +28,7 @@ function login() {
                 let authenticatedUser = JSON.parse(xhr.responseText);
             
                 APP_STATE.authUser = authenticatedUser;
-                router.navigate('dashboard');
+                ROUTER.navigate('dashboard');
 
             } else if (xhr.status != 200) {
                 printErrorToPage('Invalid credentials provided!');
@@ -54,4 +54,14 @@ function printErrorToPage(errorMsg) {
 
     errorEl.innerText = errorMsg;
     
+}
+
+function LoginComponent() {
+
+    this.template = '';
+
+    this.init = function () {
+        console.log(this);
+    }
+
 }
