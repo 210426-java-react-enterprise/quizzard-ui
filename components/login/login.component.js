@@ -26,8 +26,9 @@ function login() {
             if (xhr.readyState == 4 && xhr.status == 200) {
 
                 let authenticatedUser = JSON.parse(xhr.responseText);
+            
                 APP_STATE.authUser = authenticatedUser;
-                render('dashboard');
+                router.navigate('dashboard');
 
             } else if (xhr.status != 200) {
                 printErrorToPage('Invalid credentials provided!');
