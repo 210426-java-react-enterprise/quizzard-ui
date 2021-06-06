@@ -1,67 +1,91 @@
-(function() {
-    console.log(APP_STATE)
-    document.getElementById('login-form-button').addEventListener('click', login);
-    window.history.pushState('login', 'Login', '/login.html');
-})();
-
-function login() {
-    let providedUsername = document.getElementById('login-form-field-username').value;
-    let providedPassword = document.getElementById('login-form-field-password').value;
-    
-    if (providedUsername && providedPassword) {
-
-        let credentials = {
-            username: providedUsername,
-            password: providedPassword
-        };
-
-        let credentialsJSON = JSON.stringify(credentials);
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', `${API_ROOT}/auth`);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(credentialsJSON);
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-
-                let authenticatedUser = JSON.parse(xhr.responseText);
-            
-                APP_STATE.authUser = authenticatedUser;
-                ROUTER.navigate('dashboard');
-
-            } else if (xhr.status != 200) {
-                printErrorToPage('Invalid credentials provided!');
-            }
-        }
-
-    } else {
-        printErrorToPage('You need to provide a username and a password!');
-    }
-
-}
-
-function printErrorToPage(errorMsg) {
-    
-    let errorEl = document.getElementById('error-msg');
-
-    if (!errorEl) {
-        errorEl = document.createElement('p');
-        errorEl.id = 'error-msg';
-        errorEl.style.color = 'red';
-        document.getElementById('login-form').append(errorEl);
-    }
-
-    errorEl.innerText = errorMsg;
-    
-}
+LoginComponent.prototype = new ViewComponent('login');
+let loginComponent = new LoginComponent();
+loginComponent.render();
 
 function LoginComponent() {
 
-    this.template = '';
+    let usernameFieldElement;
+    let passwordFieldElement;
+    let loginButtonElement;
+    let errorMessageElement;
 
-    this.init = function () {
-        console.log(this);
+    let username = '';
+    let password = '';
+    
+    function updateUsername(e) {
+        username = e.currentTarget.value;
+    }
+    
+    function updatePassword(e) {
+        password = e.currentTarget.value;
+    }
+
+    function updateErrorMessage(errorMsg) {
+        if (!errorMsg) {
+            errorMessageElement.setAttribute('hidden', true);
+            errorMessageElement.value = '';
+        } else {
+            console.log('update error message: ' + errorMsg)
+            errorMessageElement.removeAttribute('hidden');
+            errorMessageElement.innerText = errorMsg;
+        }
+    }
+
+    function login() {
+
+        console.log(username, password);
+
+        if (!username || !password) {
+            updateErrorMessage('You need to provide a username and a password!');
+            return;
+        }
+        
+        let credentials = {
+            username: username,
+            password: password
+        };
+
+        fetch(`${API_ROOT}/auth`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+            .then(resp => resp.json())
+            .then(payload => {
+                if (payload) {
+                    APP_STATE.authUser = payload;
+                    console.log('SUCCESS: ', payload);
+                    updateErrorMessage('');
+                    ROUTER.navigate('/dashboard');
+                } else {
+                    updateErrorMessage('No account matching provided credentials!');
+                }
+            });
+        
+
+    }
+
+    this.render = function() {
+
+        LoginComponent.prototype.injectStylesheet();
+        LoginComponent.prototype.injectTemplate(() => {
+
+            usernameFieldElement = document.getElementById('login-form-field-username');
+            passwordFieldElement = document.getElementById('login-form-field-password');
+            loginButtonElement = document.getElementById('login-form-button');
+            errorMessageElement = document.getElementById('error-msg');
+    
+            usernameFieldElement.addEventListener('keyup', updateUsername);
+            passwordFieldElement.addEventListener('keyup', updatePassword);
+    
+            loginButtonElement.addEventListener('click', login);
+    
+            window.history.pushState('login', 'Login', '/login');
+
+        });
+                
     }
 
 }
