@@ -1,4 +1,4 @@
-function Router(startingViewName) {
+function Router() {
 
     let routes = [
         {
@@ -23,8 +23,10 @@ function Router(startingViewName) {
 
     return {
         navigate(routePath) {
-            let nextViewScriptPath = routes.filter(r => r.path == routePath).pop().scriptPath;
-            updateDynamicJsSource(nextViewScriptPath);
+            let nextView = routes.filter(r => r.path == routePath).pop();
+            if (nextView)  {
+                updateDynamicJsSource(nextView.scriptPath);
+            }
         }
     }
 
