@@ -11,21 +11,11 @@ function Router() {
         }
     ]
 
-
-    function updateDynamicJsSource(scriptPath) {
-        let script = document.getElementById('dynamic-js');
-        if (script) script.remove();
-        script = document.createElement('script');
-        script.id = 'dynamic-js'
-        script.src = scriptPath;
-        document.body.appendChild(script);
-    }
-
     return {
         navigate(routePath) {
             let nextView = routes.filter(r => r.path == routePath).pop();
             if (nextView)  {
-                updateDynamicJsSource(nextView.scriptPath);
+                loadJS(nextView.scriptPath);
             }
         }
     }
