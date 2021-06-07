@@ -1,7 +1,9 @@
-LoginComponent.prototype = new ViewComponent('login');
-let loginComponent = new LoginComponent();
-loginComponent.render();
+import { ViewComponent } from '../view.component.js';
+import env from '../../util/env.js';
+import state from '../../util/state.js';
+import router from '../../app.js';
 
+LoginComponent.prototype = new ViewComponent('login');
 function LoginComponent() {
 
     let usernameFieldElement;
@@ -45,7 +47,7 @@ function LoginComponent() {
             password: password
         };
 
-        fetch(`${API_ROOT}/auth`, {
+        fetch(`${env.apiUrl}/auth`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -55,10 +57,10 @@ function LoginComponent() {
             .then(resp => resp.json())
             .then(payload => {
                 if (payload) {
-                    APP_STATE.authUser = payload;
+                    state.authUser = payload;
                     console.log('SUCCESS: ', payload);
                     updateErrorMessage('');
-                    ROUTER.navigate('/dashboard');
+                    router.navigate('/dashboard');
                 } else {
                     updateErrorMessage('No account matching provided credentials!');
                 }
@@ -88,4 +90,6 @@ function LoginComponent() {
                 
     }
 
-}
+};
+
+export default new LoginComponent();

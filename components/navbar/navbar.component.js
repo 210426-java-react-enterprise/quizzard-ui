@@ -39,3 +39,5 @@ function NavbarComponent() {
     }
 
 }
+
+export default new NavbarComponent();

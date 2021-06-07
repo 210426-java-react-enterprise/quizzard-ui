@@ -1,17 +1,19 @@
-(function() {
-    if (!APP_STATE.authUser) ROUTER.navigate('/login');
-})();
+import { ViewComponent } from '../view.component.js';
+import state from '../../util/state.js';
 
 DashboardComponent.prototype = new ViewComponent('dashboard');
-let dashboardComponent = new DashboardComponent();
-dashboardComponent.render();
-
 function DashboardComponent() {
 
     let welcomeUserElement;
-    let currentUsername = APP_STATE.authUser.username;
 
     this.render = function() {
+
+        if (!state.authUser) {
+            state.currentView = 'login';
+            return;
+        }
+
+        let currentUsername = state.authUser.username;
 
         DashboardComponent.prototype.injectStylesheet();
         DashboardComponent.prototype.injectTemplate(() => {
@@ -26,3 +28,5 @@ function DashboardComponent() {
     }
 
 }
+
+export default new DashboardComponent();
