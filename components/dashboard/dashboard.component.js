@@ -8,6 +8,8 @@ function DashboardComponent() {
 
     this.render = function() {
 
+        console.log(state);
+        
         if (!state.authUser) {
             state.currentView = 'login';
             return;

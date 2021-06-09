@@ -1,3 +1,5 @@
+import router from "../../app.js";
+
 const NAVBAR_ELEMENT = document.getElementById('navbar');
 
 function NavbarComponent() {
@@ -34,7 +36,19 @@ function NavbarComponent() {
     this.render = function() {
         injectStylesheet();
         injectTemplate(() => {
-            console.log('navbar rendered');
+
+            document.getElementById('nav-to-login').addEventListener('click', () => {
+                router.navigate('/login')
+            });
+
+            document.getElementById('nav-to-register').addEventListener('click', () => {
+                router.navigate('/register')
+            });
+
+            document.getElementById('nav-to-dashboard').addEventListener('click', () => {
+                router.navigate('/dashboard')
+            });
+            
         });
     }
 

@@ -13,7 +13,6 @@ export function ViewComponent(viewName) {
     }
 
     this.injectTemplate = function(cb) {
-        console.log(`injecting template: ${viewName}`)
         if (templateHolder) {
             env.rootDiv.innerHTML = templateHolder;
         } else {

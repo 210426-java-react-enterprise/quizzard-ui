@@ -1,4 +1,6 @@
-export default {
-    currentView: '',
-    authUser: null
-}
+const state = {
+    authUser: null,
+    authToken: ''
+};
+
+export default state;

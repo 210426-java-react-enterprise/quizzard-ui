@@ -33,7 +33,7 @@ function LoginComponent() {
         }
     }
 
-    function login() {
+    async function login() {
 
         console.log(username, password);
 
@@ -47,25 +47,26 @@ function LoginComponent() {
             password: password
         };
 
-        fetch(`${env.apiUrl}/auth`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(credentials)
-        })
-            .then(resp => resp.json())
-            .then(payload => {
-                if (payload) {
-                    state.authUser = payload;
-                    console.log('SUCCESS: ', payload);
-                    updateErrorMessage('');
-                    router.navigate('/dashboard');
-                } else {
-                    updateErrorMessage('No account matching provided credentials!');
-                }
+        try {
+
+            let resp = await fetch(`${env.apiUrl}/auth`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(credentials)
             });
-        
+
+            let payload = await resp.json();
+
+            state.authToken = resp.headers.get('Authorization');
+            state.authUser = payload;
+            router.navigate('/dashboard');
+
+        } catch (e) {
+            console.error(e);
+            updateErrorMessage('No account matching provided credentials!');
+        }
 
     }
 
