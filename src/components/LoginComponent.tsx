@@ -1,14 +1,58 @@
+import { useState } from "react";
+import { Redirect } from 'react-router-dom';
+
 import { Principal } from "../dtos/principal";
+import { authenticate } from "../remote/auth-service";
+import ErrorMessageComponent from "./ErrorMessageComponent";
 
 interface ILoginProps {
-    currentUser: Principal,
-    updateCurrentUser: (nextCurrentUser: Principal) => void
+    currentUser: Principal | undefined,
+    setCurrentUser: (nextCurrentUser: Principal | undefined) => void
 }
 
 function LoginComponent(props: ILoginProps) {
+
+    let [username, setUsername] = useState('');
+    let [password, setPassword] = useState('');
+    let [errorMessage, setErrorMessage] = useState('');
+
+    function updateUsername(e: any) {
+        setUsername(e.currentTarget.value);
+    }
+
+    function updatePassword(e: any) {
+        setPassword(e.currentTarget.value);
+    }
+
+    async function login() {
+        try {
+    
+            if (username && password) {
+                let principal = await authenticate({username, password});
+                console.log(principal); 
+                props.setCurrentUser(principal);
+            } else {
+                setErrorMessage('You must provide a username and a password!');
+            }
+    
+        } catch (e) {
+            console.error(e)
+            setErrorMessage('Authentication failed!');
+        }
+    }
+
     return (
+        props.currentUser ? <Redirect to="/"/> :
         <>
-            <h1>Login works!</h1>
+            <div>
+                <input id="username-input" type="text" onChange={updateUsername}/>
+                <br/><br/>
+                <input id="password-input" type="password" onChange={updatePassword}/>
+                <br/><br/>
+                <button id="login-btn" onClick={login}>Login</button>
+                <br/><br/>
+                { errorMessage ? <ErrorMessageComponent errorMessage={errorMessage} /> : <></> }
+            </div>
         </>
     )
 }

@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 import LoginComponent from './components/LoginComponent';
 import { Principal } from './dtos/principal';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import HomeComponent from './components/HomeComponent';
 
 function App() {
 
-  // @ts-ignore
-  const [currentUser, updateCurrentUser] = useState(null as Principal)
+  const [currentUser, updateCurrentUser] = useState(undefined as Principal | undefined);
 
   return (
     <>
-      <LoginComponent currentUser={currentUser} updateCurrentUser={updateCurrentUser} />
+      <Router>
+        <Switch>
+          <Route exact path="/" render={() => <HomeComponent currentUser={currentUser} />} />
+          <Route path="/login" render={() => <LoginComponent currentUser={currentUser} setCurrentUser={updateCurrentUser} />} />
+        </Switch>
+      </Router>
     </>
   );
 }
